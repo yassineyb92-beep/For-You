@@ -108,24 +108,33 @@ document.addEventListener('DOMContentLoaded', function() {
 /**
  * Scroll to widget section
  * Called when user clicks CTA buttons
+ * Made globally available for onclick handlers
  */
-function scrollToWidget() {
+window.scrollToWidget = function() {
     const widgetSection = document.querySelector('#widget-section');
     if (widgetSection) {
-        const offsetTop = widgetSection.offsetTop - 80; // Account for sticky navbar
+        // Get the position of the widget section
+        const rect = widgetSection.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const offsetTop = rect.top + scrollTop - 80; // Account for sticky navbar
+        
         window.scrollTo({
             top: offsetTop,
             behavior: 'smooth'
         });
         
         // Optional: Highlight the widget section briefly
-        widgetSection.style.transition = 'box-shadow 0.3s ease';
-        widgetSection.style.boxShadow = '0 0 30px rgba(212, 165, 116, 0.3)';
         setTimeout(() => {
-            widgetSection.style.boxShadow = 'none';
-        }, 2000);
+            widgetSection.style.transition = 'box-shadow 0.3s ease';
+            widgetSection.style.boxShadow = '0 0 30px rgba(212, 165, 116, 0.3)';
+            setTimeout(() => {
+                widgetSection.style.boxShadow = 'none';
+            }, 2000);
+        }, 100);
+    } else {
+        console.error('Widget section not found');
     }
-}
+};
 
 // Handle window resize
 window.addEventListener('resize', function() {
